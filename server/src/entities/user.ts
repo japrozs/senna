@@ -1,15 +1,15 @@
 import { Field, ObjectType } from "type-graphql";
 import {
+	BaseEntity,
 	Column,
 	CreateDateColumn,
-	BaseEntity,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
-	OneToMany,
 } from "typeorm";
-import { Document } from "./document";
 import { OAuthAccount } from "./oauth-account";
+import { Document } from "./document";
 
 @ObjectType()
 @Entity()
@@ -27,14 +27,13 @@ export class User extends BaseEntity {
 	email: string;
 
 	@Column()
-	password!: string;
-
-	@Field(() => [Document])
-	@OneToMany(() => Document, (document) => document.user)
-	documents: Document[];
+	password: string;
 
 	@OneToMany(() => OAuthAccount, (account) => account.user)
 	oauthAccounts: OAuthAccount[];
+
+	@OneToMany(() => Document, (document) => document.user)
+	documents: Document[];
 
 	@Field(() => String)
 	@CreateDateColumn()

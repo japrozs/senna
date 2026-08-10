@@ -16,11 +16,12 @@ import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import playground from "graphql-playground-middleware-express";
 import { GoogleResolver } from "./resolvers/providers/google-resolver";
 import { SearchResolver } from "./resolvers/search-resolver";
-import { Document, Provider } from "./entities/document";
+import { Document } from "./entities/document";
 import { OAuthAccount } from "./entities/oauth-account";
 import { google } from "googleapis";
 import { expressIsAuth } from "./middleware/is-auth";
 import { indexGoogleDrive } from "./utils/index-google-drive";
+import { Provider } from "./types";
 
 const main = async () => {
 	const conn = new DataSource({
@@ -155,7 +156,7 @@ const main = async () => {
 			let account = await OAuthAccount.findOne({
 				where: {
 					userId,
-					provider: "google",
+					provider: Provider.GOOGLE,
 				},
 			});
 
@@ -166,7 +167,9 @@ const main = async () => {
 					providerAccountId: null,
 					accessToken: tokens.access_token,
 					refreshToken: tokens.refresh_token ?? null,
-					expiresAt: tokens.expiry_date ?? null,
+					expiresAt: tokens.expiry_date
+						? new Date(tokens.expiry_date)
+						: null,
 				});
 			} else {
 				/*
@@ -182,7 +185,10 @@ const main = async () => {
 					account.refreshToken = tokens.refresh_token;
 				}
 
-				account.expiresAt = tokens.expiry_date ?? account.expiresAt;
+				1;
+				account.expiresAt = tokens.expiry_date
+					? new Date(tokens.expiry_date)
+					: account.expiresAt;
 			}
 
 			await account.save();

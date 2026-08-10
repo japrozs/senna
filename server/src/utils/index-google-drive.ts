@@ -1,12 +1,13 @@
 import { google } from "googleapis";
 import { OAuthAccount } from "../entities/oauth-account";
-import { Document, Provider } from "../entities/document";
+import { Document } from "../entities/document";
+import { Provider } from "../types";
 
 export async function indexGoogleDrive(userId: string) {
 	const account = await OAuthAccount.findOne({
 		where: {
 			userId,
-			provider: "google",
+			provider: Provider.GOOGLE,
 		},
 	});
 
