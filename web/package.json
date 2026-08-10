@@ -1,0 +1,37 @@
+{
+	"name": "web",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "eslint",
+		"gen": "graphql-codegen --config codegen.yml"
+	},
+	"dependencies": {
+		"@apollo/client": "^4.2.10",
+		"graphql": "17.0.2",
+		"next": "16.3.0",
+		"next-transition-bar": "^1.1.2",
+		"react": "19.2.8",
+		"react-dom": "19.2.8"
+	},
+	"devDependencies": {
+		"@graphql-codegen/cli": "7.2.0",
+		"@graphql-codegen/client-preset": "^6.1.2",
+		"@graphql-codegen/typescript": "6.1.0",
+		"@graphql-codegen/typescript-operations": "6.1.5",
+		"@graphql-codegen/typescript-react-apollo": "^4.1.0",
+		"@tailwindcss/postcss": "^4",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"babel-plugin-react-compiler": "1.0.0",
+		"eslint": "^9",
+		"eslint-config-next": "16.3.0",
+		"tailwindcss": "^4",
+		"typescript": "^5"
+	},
+	"packageManager": "yarn@1.22.22"
+}

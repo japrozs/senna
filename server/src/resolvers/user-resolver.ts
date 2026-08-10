@@ -162,12 +162,12 @@ export class UserResolver {
 
 	@Mutation(() => UserResponse)
 	async login(
-		@Arg("usernameOrEmail") usernameOrEmail: string,
+		@Arg("email") email: string,
 		@Arg("password") password: string,
 		@Ctx() { req }: Context,
 	): Promise<UserResponse> {
 		const user = await User.findOne({
-			where: { email: usernameOrEmail },
+			where: { email },
 		});
 
 		if (!user) {

@@ -1,0 +1,10 @@
+@import url("https://fonts.cdnfonts.com/css/menlo");
+@import "tailwindcss";
+
+.menlo {
+	font-family: "Menlo";
+}
+
+.blue {
+	color: #2d6cdf;
+}
