@@ -6,10 +6,12 @@ import { IoCode } from "react-icons/io5";
 
 interface DocumentCardProps {
 	document: SearchDocumentsQuery["search"][number];
+	selected: boolean;
 }
 
 export const DocumentCard: React.FC<DocumentCardProps> = ({
 	document: doc,
+	selected = false,
 }) => {
 	const [metadataOpen, setMetadataOpen] = useState(false);
 	const metadataRef = useRef<HTMLDivElement>(null);
@@ -35,9 +37,11 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
 
 	return (
 		<div
-			className={`relative overflow-visible border border-gray-200 hover:border-gray-300 ${
-				metadataOpen ? "z-50" : "z-0"
-			}`}
+			className={`relative overflow-visible border ${
+				selected
+					? "border-gray-300 box-shadow"
+					: "border-gray-200 hover:border-gray-300"
+			} ${metadataOpen ? "z-50" : "z-0"}`}
 		>
 			{/* Document */}
 			<a
@@ -62,14 +66,14 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
 								alt=""
 							/>
 
-							<span className="ml-0.5">
+							<span className="ml-0.5 pt-0.5">
 								{formatMimeType(doc.mimeType)}
 							</span>
 						</span>
 
 						<span className="mx-1.5">—</span>
 
-						<span>
+						<span className="pt-0.5">
 							{new Date(
 								doc.modifiedAt as string | number,
 							).toLocaleDateString("en-US", {

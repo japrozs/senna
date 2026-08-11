@@ -15,9 +15,11 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 	const [search, setSearch] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState("");
 	const [settingsOpen, setSettingsOpen] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const settingsRef = useRef<HTMLDivElement>(null);
+	const resultsRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -36,9 +38,89 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 
 	const documents = data?.search ?? [];
 
+	/*
+	 * Reset selected result whenever the search changes.
+	 */
+	useEffect(() => {
+		setSelectedIndex(-1);
+	}, [debouncedSearch]);
+
+	/*
+	 * Keyboard navigation.
+	 */
+	const handleSearchKeyDown = (
+		event: React.KeyboardEvent<HTMLInputElement>,
+	) => {
+		if (documents.length === 0) {
+			return;
+		}
+
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+
+			setSelectedIndex((current) => {
+				if (current >= documents.length - 1) {
+					return 0;
+				}
+
+				return current + 1;
+			});
+		}
+
+		if (event.key === "ArrowUp") {
+			event.preventDefault();
+
+			setSelectedIndex((current) => {
+				if (current <= 0) {
+					return documents.length - 1;
+				}
+
+				return current - 1;
+			});
+		}
+
+		if (event.key === "Enter" && selectedIndex >= 0) {
+			event.preventDefault();
+
+			const selectedDocument = documents[selectedIndex];
+
+			if (selectedDocument?.url) {
+				window.open(
+					selectedDocument.url,
+					"_blank",
+					"noopener,noreferrer",
+				);
+			}
+		}
+	};
+
 	const handleSearchFocus = () => {
 		searchInputRef.current?.select();
 	};
+
+	/*
+	 * Reset selected result when clicking outside
+	 * the search bar and document results.
+	 */
+	useEffect(() => {
+		const handleClickOutsideSearch = (event: MouseEvent) => {
+			const target = event.target as Node;
+
+			const clickedSearchBar = searchInputRef.current?.contains(target);
+
+			const clickedDocumentCard = resultsRef.current?.contains(target);
+
+			if (!clickedSearchBar && !clickedDocumentCard) {
+				setSelectedIndex(-1);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutsideSearch);
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutsideSearch);
+		};
+	}, []);
 
 	/*
 	 * Close settings when clicking outside.
@@ -118,6 +200,7 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 						onFocus={handleSearchFocus}
+						onKeyDown={handleSearchKeyDown}
 						placeholder="Search your files..."
 						autoFocus
 						className="w-full border border-gray-300 bg-transparent px-10 py-1.5 text-[0.95rem] outline-none"
@@ -144,17 +227,18 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 				)}
 
 				{!loading && !error && debouncedSearch.trim() !== "" && (
-					<div className="mt-6">
+					<div ref={resultsRef} className="mt-6">
 						{documents.length === 0 ? (
 							<p className="mt-[-2] text-base text-gray-400">
 								No results found.
 							</p>
 						) : (
 							<div className="space-y-2">
-								{documents.map((document) => (
+								{documents.map((document, index) => (
 									<DocumentCard
 										key={document.id}
 										document={document}
+										selected={selectedIndex === index}
 									/>
 								))}
 							</div>
