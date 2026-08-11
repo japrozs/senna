@@ -39,7 +39,7 @@ export const Button: React.FC<ButtonProps> = ({
 			ref={buttonRef}
 			className={`${
 				(loading || disabled) && "cursor-not-allowed"
-			} flex items-center justify-center group button-component ${
+			} flex items-center justify-center cursor-pointer group button-component ${
 				colored
 					? `${color ? color : "bg-gray-900 hover:bg-primary-color border-none text-white"}`
 					: "bg-white border-gray-300 hover:bg-gray-50"

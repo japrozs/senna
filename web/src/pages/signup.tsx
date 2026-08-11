@@ -41,7 +41,6 @@ const Signup: React.FC = ({}) => {
 
 			<Formik
 				initialValues={{
-					username: "",
 					name: "",
 					email: "",
 					password: "",
@@ -109,9 +108,9 @@ const Signup: React.FC = ({}) => {
 				Already have an account?{" "}
 				<Link
 					href="/login"
-					className="hover:text-primary-color underline decoration-dotted"
+					className="hover:text-primary-color underline decoration-dotted hover:decoration-solid"
 				>
-					Log in
+					Sign in
 				</Link>
 			</p>
 

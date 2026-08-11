@@ -102,7 +102,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 				Don't have an account?{" "}
 				<Link
 					href="/signup"
-					className="hover:text-primary-color underline decoration-dotted"
+					className="hover:text-primary-color underline decoration-dotted hover:decoration-solid"
 				>
 					Sign up
 				</Link>

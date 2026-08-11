@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import { BiExit } from "react-icons/bi";
-import { FaDropbox, FaPlus } from "react-icons/fa";
+import { FaDropbox } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { FiPlus } from "react-icons/fi";
-import { IoLogoGithub, IoPersonOutline } from "react-icons/io5";
-import { MdOutlineAlternateEmail } from "react-icons/md";
-import { PiPersonSimpleCircleBold } from "react-icons/pi";
+import { IoLogoGithub } from "react-icons/io5";
 import { SiNotion } from "react-icons/si";
 
 interface SettingsModalProps {
@@ -32,10 +28,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	};
 
 	return (
-		<div className="absolute right-0 top-7 z-50 w-64 border border-gray-300 bg-white">
+		<div className="absolute right-0 top-7 z-[200] w-64 overflow-visible border border-gray-300 bg-white box-shadow">
 			<div className="border-gray-200 px-3 py-1.5">
 				<div className="text-[0.9rem] text-gray-600">
 					<p className="text-gray-900">{name}</p>
+
 					<p className="mt-0.5 text-[0.8rem] text-gray-400 menlo">
 						{email}
 					</p>
@@ -44,17 +41,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
 			{/* Integrations */}
 			<div className="border-t border-gray-200 px-3 pt-1.5 pb-1">
-				<p className="flex flex-row text-[0.95rem] text-gray-900">
-					{/* <FiPlus className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-gray-400" />{" "} */}
-					Integrations
-				</p>
+				<p className="text-[0.95rem] text-gray-900">Integrations</p>
 			</div>
 
 			<div className="border-t border-dashed border-gray-200 py-0.5">
 				{/* GitHub */}
 				<div className="flex items-center justify-between px-3 py-1.5">
 					<span className="flex flex-row text-[0.9rem] text-gray-600">
-						<IoLogoGithub className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-primary-color" />{" "}
+						<IoLogoGithub className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-primary-color" />
 						GitHub
 					</span>
 
@@ -80,7 +74,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 				{/* Google */}
 				<div className="flex items-center justify-between px-3 py-1.5">
 					<span className="flex flex-row text-[0.9rem] text-gray-600">
-						<FcGoogle className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-gray-400" />{" "}
+						<FcGoogle className="mt-[0.045rem] mr-1.5 text-[1.1rem]" />
 						Google
 					</span>
 
@@ -104,9 +98,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 				</div>
 
 				{/* Dropbox */}
-				<div className="flex items-center justify-between px-3 py-1.5 pb-1.5">
+				<div className="flex items-center justify-between px-3 py-1.5">
 					<span className="flex flex-row text-[0.9rem] text-gray-600">
-						<FaDropbox className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-blue-500" />{" "}
+						<FaDropbox className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-blue-500" />
 						Dropbox
 					</span>
 
@@ -132,7 +126,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 				{/* Notion */}
 				<div className="flex items-center justify-between px-3 py-1.5 pb-1.5">
 					<span className="flex flex-row text-[0.9rem] text-gray-600">
-						<SiNotion className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-primary-color" />{" "}
+						<SiNotion className="mt-[0.045rem] mr-1.5 text-[1.1rem] text-primary-color" />
 						Notion
 					</span>
 
@@ -156,11 +150,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 				</div>
 			</div>
 
+			{/* View source */}
 			<div className="group flex items-center justify-between border-t border-gray-200 px-3 py-1.5 hover:cursor-pointer">
 				<span className="flex flex-row items-center text-[0.9rem] text-gray-600 group-hover:text-primary-color group-hover:underline">
 					View source
 				</span>
 			</div>
+
+			{/* Suggest features */}
 			<div className="group flex items-center justify-between border-t border-gray-200 px-3 py-1.5 hover:cursor-pointer">
 				<span className="flex flex-row items-center text-[0.9rem] text-gray-600 group-hover:text-primary-color group-hover:underline">
 					Suggest features

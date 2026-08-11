@@ -8,7 +8,7 @@ export const formatMimeType = (mimeType: string): string => {
 		"application/vnd.google-apps.drawing": "Google Drawings",
 		"application/vnd.google-apps.script": "Google Apps Script",
 		"application/vnd.google-apps.site": "Google Sites",
-		"application/vnd.google-apps.folder": "GDrive Folder",
+		"application/vnd.google-apps.folder": "Google Drive",
 		"application/vnd.google-apps.shortcut": "Shortcut",
 
 		// Common files

@@ -1,6 +1,6 @@
 import { DocumentCard } from "@/components/custom/document-card";
 import { SettingsModal } from "@/components/ui/settings-modal";
-import { MeDocument, SearchDocumentsDocument } from "@/generated/graphql";
+import { SearchDocumentsDocument } from "@/generated/graphql";
 import { useIsAuth } from "@/utils/use-is-auth";
 import { useQuery } from "@apollo/client/react";
 import Head from "next/head";
@@ -68,18 +68,21 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 				<title>senna</title>
 			</Head>
 
-			<div className="sticky top-3 relative flex w-full items-center justify-between">
+			{/* Header */}
+			<div className="relative z-50 flex w-full items-center justify-between">
 				<div />
 
-				<a
-					href="/app"
-					className="absolute left-1/2 mx-auto w-full max-w-3xl -translate-x-1/2 menlo text-gray-400 hover:text-primary-color"
-				>
-					$$$$$ [senna] $$$$$
-				</a>
+				<div className="absolute left-1/2 mx-auto w-full max-w-3xl -translate-x-1/2">
+					<a
+						href="/app"
+						className="menlo text-gray-400 hover:text-primary-color"
+					>
+						$$$$$ [senna] $$$$$
+					</a>
+				</div>
 
 				{/* Settings */}
-				<div ref={settingsRef} className="relative ml-auto">
+				<div ref={settingsRef} className="relative z-[100] ml-auto">
 					<button
 						type="button"
 						onClick={() => setSettingsOpen((open) => !open)}
@@ -101,6 +104,7 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 				</div>
 			</div>
 
+			{/* Search / Results */}
 			<div className="mx-auto w-full max-w-3xl">
 				<div className="sticky top-3 z-10 mt-3.5 bg-white">
 					<FiSearch

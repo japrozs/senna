@@ -175,7 +175,7 @@ export class UserResolver {
 				errors: [
 					{
 						field: "email",
-						message: "that account doesn't exist",
+						message: "That account doesn't exist",
 					},
 				],
 			};
@@ -187,7 +187,7 @@ export class UserResolver {
 				errors: [
 					{
 						field: "password",
-						message: "incorrect password",
+						message: "Incorrect password",
 					},
 				],
 			};
