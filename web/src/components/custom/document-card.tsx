@@ -33,7 +33,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document }) => {
 						</span>
 					</span>
 					<span className="mx-1.5">—</span>
-					<span className="">
+					<span>
 						{new Date(
 							document.modifiedAt as string | number,
 						).toLocaleDateString("en-US", {

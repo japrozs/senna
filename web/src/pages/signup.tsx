@@ -34,6 +34,9 @@ const Signup: React.FC = ({}) => {
 			}}
 			className="w-80 ml-auto mr-auto flex flex-col items-center justify-center"
 		>
+			<Head>
+				<title>senna – signup</title>
+			</Head>
 			<p className="menlo text-gray-400">$$$$$ [senna] $$$$$</p>
 
 			<Formik

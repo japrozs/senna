@@ -7,6 +7,11 @@
 	--size-smol: "0.95rem";
 }
 
+*:focus-visible {
+	outline: 1.5px solid #66ccff;
+	outline-offset: 0px;
+}
+
 @font-face {
 	font-family: "Univers";
 	font-weight: normal;
@@ -44,17 +49,17 @@
 	src: url("/fonts/univers-light.ttf");
 }
 
-/* @font-face {
-    font-family: "Berkeley mono";
-    font-weight: normal;
-    src: url("/fonts/berkeley-mono-regular.woff2");
+@font-face {
+	font-family: "Berkeley mono";
+	font-weight: normal;
+	src: url("/fonts/berkeley-mono-regular.woff2");
 }
 
 @font-face {
-    font-family: "Berkeley mono";
-    font-weight: bold;
-    src: url("/fonts/berkeley-mono-bold.woff2");
-} */
+	font-family: "Berkeley mono";
+	font-weight: bold;
+	src: url("/fonts/berkeley-mono-bold.woff2");
+}
 
 :root {
 	font-family: "Univers-next";
@@ -72,6 +77,7 @@
 .blue {
 	color: #2d6cdf;
 }
-input {
+input,
+.modal {
 	box-shadow: 2px 2px #eee;
 }

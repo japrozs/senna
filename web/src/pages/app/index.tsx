@@ -1,14 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { SearchDocumentsDocument } from "@/generated/graphql";
-import { useQuery } from "@apollo/client/react";
 import { DocumentCard } from "@/components/custom/document-card";
+import { SettingsModal } from "@/components/ui/settings-modal";
+import { SearchDocumentsDocument } from "@/generated/graphql";
+import { useIsAuth } from "@/utils/use-is-auth";
+import { useQuery } from "@apollo/client/react";
+import Head from "next/head";
+import React, { useEffect, useRef, useState } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 
 interface AppIndexProps {}
 
 const AppIndex: React.FC<AppIndexProps> = ({}) => {
+	useIsAuth();
+
 	const [search, setSearch] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState("");
+	const [settingsOpen, setSettingsOpen] = useState(false);
+
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	const settingsRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -27,48 +36,90 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 
 	const documents = data?.search ?? [];
 
+	const handleSearchFocus = () => {
+		searchInputRef.current?.select();
+	};
+
+	/*
+	 * Close settings when clicking outside.
+	 */
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				settingsRef.current &&
+				!settingsRef.current.contains(event.target as Node)
+			) {
+				setSettingsOpen(false);
+			}
+		};
+
+		if (settingsOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [settingsOpen]);
+
 	return (
 		<div className="min-h-screen px-3 py-2">
+			<Head>
+				<title>senna</title>
+			</Head>
+
 			<div className="relative flex w-full items-center justify-between">
-				<div></div>
+				<div />
+
 				<a
 					href="/app"
-					className="w-full max-w-3xl mx-auto absolute left-1/2 -translate-x-1/2 menlo text-gray-400 hover:text-primary-color"
+					className="absolute left-1/2 mx-auto w-full max-w-3xl -translate-x-1/2 menlo text-gray-400 hover:text-primary-color"
 				>
 					$$$$$ [senna] $$$$$
 				</a>
 
-				<p className="text-[0.9rem] text-gray-500 hover:text-primary-color cursor-pointer hover:underline decoration-dashed">
-					Settings
-				</p>
+				{/* Settings */}
+				<div ref={settingsRef} className="relative ml-auto">
+					<button
+						type="button"
+						onClick={() => setSettingsOpen((open) => !open)}
+						className={`cursor-pointer text-[0.95rem] ${settingsOpen ? "text-primary-color underline" : "text-gray-500"} hover:text-primary-color hover:underline decoration-dashed`}
+					>
+						Settings
+					</button>
+
+					{settingsOpen && <SettingsModal />}
+				</div>
 			</div>
 
 			<div className="mx-auto w-full max-w-3xl">
-				<div className="relative mt-3.5">
-					{" "}
+				<div className="sticky top-3 z-10 mt-3.5 bg-white">
 					<FiSearch
 						className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 						size={17}
-					/>{" "}
+					/>
+
 					<input
+						ref={searchInputRef}
 						type="text"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
+						onFocus={handleSearchFocus}
 						placeholder="Search your files..."
 						autoFocus
-						className="w-full border border-gray-300 bg-transparent px-10 py-1.5 text-[0.95rem] outline-none focus:border-primary-color"
-					/>{" "}
+						className="focus:outline-0 w-full border border-gray-300 bg-transparent px-10 py-1.5 text-[0.95rem] outline-none focus:border-primary-color"
+					/>
+
 					{search && (
 						<button
 							type="button"
 							onClick={() => setSearch("")}
-							className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer transition-colors hover:text-primary-color"
+							className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-primary-color"
 							aria-label="Clear search"
 						>
-							{" "}
-							<FiX size={17} />{" "}
+							<FiX size={17} />
 						</button>
-					)}{" "}
+					)}
 				</div>
 
 				{loading && (

@@ -34,6 +34,9 @@ const Login: React.FC<LoginProps> = ({}) => {
 			}}
 			className="w-80 ml-auto mr-auto flex flex-col items-center justify-center"
 		>
+			<Head>
+				<title>senna – login</title>
+			</Head>
 			<p className="menlo text-gray-400">$$$$$ [senna] $$$$$</p>
 
 			<Formik
