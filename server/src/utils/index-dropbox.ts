@@ -1,6 +1,7 @@
 import { OAuthAccount } from "../entities/oauth-account";
 import { Document } from "../entities/document";
 import { Provider } from "../types";
+import { Request, Response } from "express";
 
 interface DropboxEntry {
 	".tag": string;
@@ -126,3 +127,111 @@ async function processDropboxEntries(userId: string, entries: DropboxEntry[]) {
 		console.log(`Indexed Dropbox file "${entry.name}"`);
 	}
 }
+
+export const dropboxOAuthCallback = async (req: Request, res: Response) => {
+	try {
+		const { code, state } = req.query;
+
+		if (!code || typeof code !== "string") {
+			return res.status(400).send("Missing authorization code");
+		}
+
+		if (
+			!state ||
+			typeof state !== "string" ||
+			state !== req.session.dropboxOAuthState
+		) {
+			return res.status(400).send("Invalid OAuth state");
+		}
+
+		delete req.session.dropboxOAuthState;
+
+		const tokenResponse = await fetch(
+			"https://api.dropboxapi.com/oauth2/token",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+				body: new URLSearchParams({
+					code,
+					grant_type: "authorization_code",
+					client_id: process.env.DROPBOX_CLIENT_ID!,
+					client_secret: process.env.DROPBOX_CLIENT_SECRET!,
+					redirect_uri: process.env.DROPBOX_REDIRECT_URI!,
+				}).toString(),
+			},
+		);
+
+		const tokenData = await tokenResponse.json();
+
+		if (!tokenResponse.ok || !tokenData.access_token) {
+			console.error("Dropbox token error:", tokenData);
+
+			return res
+				.status(400)
+				.send("Dropbox did not return an access token");
+		}
+
+		const userId = req.session.userId!;
+
+		let account = await OAuthAccount.findOne({
+			where: {
+				userId,
+				provider: Provider.DROPBOX,
+			},
+		});
+
+		if (!account) {
+			account = OAuthAccount.create({
+				userId,
+				provider: Provider.DROPBOX,
+				providerAccountId: tokenData.account_id ?? null,
+				accessToken: tokenData.access_token,
+				refreshToken: tokenData.refresh_token ?? null,
+				expiresAt: tokenData.expires_in
+					? new Date(Date.now() + tokenData.expires_in * 1000)
+					: null,
+			});
+		} else {
+			account.accessToken = tokenData.access_token;
+
+			if (tokenData.refresh_token) {
+				account.refreshToken = tokenData.refresh_token;
+			}
+
+			if (tokenData.account_id) {
+				account.providerAccountId = tokenData.account_id;
+			}
+
+			account.expiresAt = tokenData.expires_in
+				? new Date(Date.now() + tokenData.expires_in * 1000)
+				: account.expiresAt;
+		}
+
+		await account.save();
+
+		/*
+		 * Start indexing in the background.
+		 * Don't make the user wait for Dropbox indexing.
+		 */
+		indexDropbox(userId)
+			.then(() => {
+				console.log(`Dropbox indexing completed for user ${userId}`);
+			})
+			.catch((error) => {
+				console.error(
+					`Dropbox indexing failed for user ${userId}:`,
+					error,
+				);
+			});
+
+		return res.redirect(
+			`${process.env.CORS_ORIGIN}/settings?dropbox=connected`,
+		);
+	} catch (error) {
+		console.error("Dropbox OAuth error:", error);
+
+		return res.status(500).send("Failed to connect Dropbox account");
+	}
+};

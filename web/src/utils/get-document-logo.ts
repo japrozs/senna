@@ -35,6 +35,11 @@ export const getDocumentLogo = (provider: string, mimeType: string): string => {
 		return "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Dropbox_Icon.svg/960px-Dropbox_Icon.svg.png";
 	}
 
+	// Notion
+	if (provider === "notion") {
+		return "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/960px-Notion-logo.svg.png";
+	}
+
 	// Generic fallback
 	return "";
 };

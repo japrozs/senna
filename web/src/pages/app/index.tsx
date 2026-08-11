@@ -1,6 +1,6 @@
 import { DocumentCard } from "@/components/custom/document-card";
 import { SettingsModal } from "@/components/ui/settings-modal";
-import { SearchDocumentsDocument } from "@/generated/graphql";
+import { MeDocument, SearchDocumentsDocument } from "@/generated/graphql";
 import { useIsAuth } from "@/utils/use-is-auth";
 import { useQuery } from "@apollo/client/react";
 import Head from "next/head";
@@ -10,7 +10,7 @@ import { FiSearch, FiX } from "react-icons/fi";
 interface AppIndexProps {}
 
 const AppIndex: React.FC<AppIndexProps> = ({}) => {
-	useIsAuth();
+	const { data: meData } = useIsAuth();
 
 	const [search, setSearch] = useState("");
 	const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -83,12 +83,21 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 					<button
 						type="button"
 						onClick={() => setSettingsOpen((open) => !open)}
-						className={`cursor-pointer text-[0.95rem] ${settingsOpen ? "text-primary-color underline" : "text-gray-500"} hover:text-primary-color hover:underline decoration-dashed`}
+						className={`cursor-pointer text-[0.95rem] ${
+							settingsOpen
+								? "text-primary-color underline"
+								: "text-gray-500"
+						} hover:text-primary-color hover:underline`}
 					>
 						Settings
 					</button>
 
-					{settingsOpen && <SettingsModal />}
+					{settingsOpen && (
+						<SettingsModal
+							name={meData?.me?.name ?? ""}
+							email={meData?.me?.email ?? ""}
+						/>
+					)}
 				</div>
 			</div>
 
@@ -107,7 +116,7 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 						onFocus={handleSearchFocus}
 						placeholder="Search your files..."
 						autoFocus
-						className="focus:outline-0 w-full border border-gray-300 bg-transparent px-10 py-1.5 text-[0.95rem] outline-none focus:border-primary-color"
+						className="w-full border border-gray-300 bg-transparent px-10 py-1.5 text-[0.95rem] outline-none"
 					/>
 
 					{search && (

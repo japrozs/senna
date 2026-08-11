@@ -9,6 +9,7 @@ declare module "express-session" {
 		googleOAuthState?: string;
 		githubOAuthState?: string;
 		dropboxOAuthState?: string;
+		notionOAuthState?: string;
 	}
 }
 
@@ -25,4 +26,5 @@ export enum Provider {
 	GOOGLE = "google",
 	GITHUB = "github",
 	DROPBOX = "dropbox",
+	NOTION = "notion",
 }

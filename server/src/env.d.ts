@@ -15,6 +15,9 @@ declare global {
       DROPBOX_CLIENT_ID: string;
       DROPBOX_CLIENT_SECRET: string;
       DROPBOX_REDIRECT_URI: string;
+      NOTION_CLIENT_ID: string;
+      NOTION_CLIENT_SECRET: string;
+      NOTION_REDIRECT_URI: string;
     }
   }
 }

@@ -43,6 +43,9 @@ export const formatMimeType = (mimeType: string): string => {
 
 		// Dropbox,
 		"dropbox/file": "Dropbox",
+
+		// Notion
+		"notion/page": "Notion",
 	};
 
 	return mimeTypes[mimeType] ?? mimeType;

@@ -19,7 +19,7 @@ type Documents = {
     "fragment RegularUser on User {\n  id\n  name\n  email\n  createdAt\n  updatedAt\n  __typename\n}": typeof types.RegularUserFragmentDoc,
     "mutation Login($email: String!, $password: String!) {\n  login(email: $email, password: $password) {\n    ...RegularUserResponse\n  }\n}": typeof types.LoginDocument,
     "mutation Register($options: UserInput!) {\n  register(options: $options) {\n    ...RegularUserResponse\n  }\n}": typeof types.RegisterDocument,
-    "query Me {\n  me {\n    ...RegularUser\n  }\n}": typeof types.MeDocument,
+    "query Me {\n  me {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    __typename\n  }\n}": typeof types.MeDocument,
     "query SearchDocuments($query: String!) {\n  search(query: $query) {\n    id\n    externalId\n    provider\n    title\n    url\n    mimeType\n    modifiedAt\n  }\n}": typeof types.SearchDocumentsDocument,
 };
 const documents: Documents = {
@@ -28,7 +28,7 @@ const documents: Documents = {
     "fragment RegularUser on User {\n  id\n  name\n  email\n  createdAt\n  updatedAt\n  __typename\n}": types.RegularUserFragmentDoc,
     "mutation Login($email: String!, $password: String!) {\n  login(email: $email, password: $password) {\n    ...RegularUserResponse\n  }\n}": types.LoginDocument,
     "mutation Register($options: UserInput!) {\n  register(options: $options) {\n    ...RegularUserResponse\n  }\n}": types.RegisterDocument,
-    "query Me {\n  me {\n    ...RegularUser\n  }\n}": types.MeDocument,
+    "query Me {\n  me {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    __typename\n  }\n}": types.MeDocument,
     "query SearchDocuments($query: String!) {\n  search(query: $query) {\n    id\n    externalId\n    provider\n    title\n    url\n    mimeType\n    modifiedAt\n  }\n}": types.SearchDocumentsDocument,
 };
 
@@ -69,7 +69,7 @@ export function graphql(source: "mutation Register($options: UserInput!) {\n  re
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query Me {\n  me {\n    ...RegularUser\n  }\n}"): (typeof documents)["query Me {\n  me {\n    ...RegularUser\n  }\n}"];
+export function graphql(source: "query Me {\n  me {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    __typename\n  }\n}"): (typeof documents)["query Me {\n  me {\n    id\n    name\n    email\n    createdAt\n    updatedAt\n    __typename\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
