@@ -28,14 +28,19 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 
 	return (
 		<div className="min-h-screen px-3 py-2">
-			<div className="mx-auto w-full max-w-3xl">
+			<div className="relative flex w-full items-center justify-between">
+				<div></div>
 				<a
 					href="/app"
-					className="menlo text-gray-400 hover:text-primary-color"
+					className="w-full max-w-3xl mx-auto absolute left-1/2 -translate-x-1/2 menlo text-gray-400 hover:text-primary-color"
 				>
 					$$$$$ [senna] $$$$$
 				</a>
 
+				<p>hi ther</p>
+			</div>
+
+			<div className="mx-auto w-full max-w-3xl">
 				<input
 					type="text"
 					value={search}
@@ -56,7 +61,7 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 				{!loading && !error && debouncedSearch.trim() !== "" && (
 					<div className="mt-6">
 						{documents.length === 0 ? (
-							<p className="text-base text-gray-400">
+							<p className="mt-[-2] text-base text-gray-400">
 								No results found.
 							</p>
 						) : (
