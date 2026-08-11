@@ -1,0 +1,11 @@
+query SearchDocuments($query: String!) {
+	search(query: $query) {
+		id
+		externalId
+		provider
+		title
+		url
+		mimeType
+		modifiedAt
+	}
+}
