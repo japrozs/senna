@@ -1,4 +1,4 @@
-senna [snapsearch for all your documents]
+senna [spotlight search for all your apps]
 
 --- currently working
 + basic oauth and index

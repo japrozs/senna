@@ -37,6 +37,12 @@ export const formatMimeType = (mimeType: string): string => {
 		// Archives
 		"application/zip": "ZIP",
 		"application/x-rar-compressed": "RAR",
+
+		// Github
+		"github/repository": "GitHub",
+
+		// Dropbox,
+		"dropbox/file": "Dropbox",
 	};
 
 	return mimeTypes[mimeType] ?? mimeType;

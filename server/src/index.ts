@@ -22,6 +22,10 @@ import { google } from "googleapis";
 import { expressIsAuth } from "./middleware/is-auth";
 import { indexGoogleDrive } from "./utils/index-google-drive";
 import { Provider } from "./types";
+import { GitHubResolver } from "./resolvers/providers/github-resolver";
+import { indexGitHubRepositories } from "./utils/index-github-repositories";
+import { DropboxResolver } from "./resolvers/providers/dropbox-resolver";
+import { indexDropbox } from "./utils/index-dropbox";
 
 const main = async () => {
 	const conn = new DataSource({
@@ -81,7 +85,13 @@ const main = async () => {
 
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [UserResolver, GoogleResolver, SearchResolver],
+			resolvers: [
+				UserResolver,
+				GoogleResolver,
+				GitHubResolver,
+				DropboxResolver,
+				SearchResolver,
+			],
 			validate: false,
 		}),
 
@@ -208,6 +218,197 @@ const main = async () => {
 			console.error("Google OAuth error:", error);
 
 			return res.status(500).send("Failed to connect Google account");
+		}
+	});
+
+	app.get("/auth/github/callback", expressIsAuth, async (req, res) => {
+		try {
+			const { code, state } = req.query;
+
+			if (!code || typeof code !== "string") {
+				return res.status(400).send("Missing authorization code");
+			}
+
+			if (
+				!state ||
+				typeof state !== "string" ||
+				state !== req.session.githubOAuthState
+			) {
+				return res.status(400).send("Invalid OAuth state");
+			}
+
+			delete req.session.githubOAuthState;
+
+			const tokenResponse = await fetch(
+				"https://github.com/login/oauth/access_token",
+				{
+					method: "POST",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						client_id: process.env.GITHUB_CLIENT_ID,
+						client_secret: process.env.GITHUB_CLIENT_SECRET,
+						code,
+						redirect_uri: process.env.GITHUB_REDIRECT_URI,
+					}),
+				},
+			);
+
+			const tokenData = await tokenResponse.json();
+
+			if (!tokenData.access_token) {
+				console.error("GitHub token error:", tokenData);
+
+				return res
+					.status(400)
+					.send("GitHub did not return an access token");
+			}
+
+			const userId = req.session.userId!;
+
+			let account = await OAuthAccount.findOne({
+				where: {
+					userId,
+					provider: Provider.GITHUB,
+				},
+			});
+
+			if (!account) {
+				account = OAuthAccount.create({
+					userId,
+					provider: Provider.GITHUB,
+					providerAccountId: null,
+					accessToken: tokenData.access_token,
+					refreshToken: null,
+					expiresAt: null,
+				});
+			} else {
+				account.accessToken = tokenData.access_token;
+			}
+
+			await account.save();
+
+			await indexGitHubRepositories(userId);
+
+			return res.redirect(
+				`${process.env.CORS_ORIGIN}/settings?github=connected`,
+			);
+		} catch (error) {
+			console.error("GitHub OAuth error:", error);
+
+			return res.status(500).send("Failed to connect GitHub account");
+		}
+	});
+
+	app.get("/auth/dropbox/callback", expressIsAuth, async (req, res) => {
+		try {
+			const { code, state } = req.query;
+
+			if (!code || typeof code !== "string") {
+				return res.status(400).send("Missing authorization code");
+			}
+
+			if (
+				!state ||
+				typeof state !== "string" ||
+				state !== req.session.dropboxOAuthState
+			) {
+				return res.status(400).send("Invalid OAuth state");
+			}
+
+			delete req.session.dropboxOAuthState;
+
+			const tokenResponse = await fetch(
+				"https://api.dropboxapi.com/oauth2/token",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					body: new URLSearchParams({
+						code,
+						grant_type: "authorization_code",
+						client_id: process.env.DROPBOX_CLIENT_ID!,
+						client_secret: process.env.DROPBOX_CLIENT_SECRET!,
+						redirect_uri: process.env.DROPBOX_REDIRECT_URI!,
+					}).toString(),
+				},
+			);
+
+			const tokenData = await tokenResponse.json();
+
+			if (!tokenResponse.ok || !tokenData.access_token) {
+				console.error("Dropbox token error:", tokenData);
+
+				return res
+					.status(400)
+					.send("Dropbox did not return an access token");
+			}
+
+			const userId = req.session.userId!;
+
+			let account = await OAuthAccount.findOne({
+				where: {
+					userId,
+					provider: Provider.DROPBOX,
+				},
+			});
+
+			if (!account) {
+				account = OAuthAccount.create({
+					userId,
+					provider: Provider.DROPBOX,
+					providerAccountId: tokenData.account_id ?? null,
+					accessToken: tokenData.access_token,
+					refreshToken: tokenData.refresh_token ?? null,
+					expiresAt: tokenData.expires_in
+						? new Date(Date.now() + tokenData.expires_in * 1000)
+						: null,
+				});
+			} else {
+				account.accessToken = tokenData.access_token;
+
+				if (tokenData.refresh_token) {
+					account.refreshToken = tokenData.refresh_token;
+				}
+
+				if (tokenData.account_id) {
+					account.providerAccountId = tokenData.account_id;
+				}
+
+				account.expiresAt = tokenData.expires_in
+					? new Date(Date.now() + tokenData.expires_in * 1000)
+					: account.expiresAt;
+			}
+
+			await account.save();
+
+			/*
+			 * Start indexing in the background.
+			 * Don't make the user wait for Dropbox indexing.
+			 */
+			indexDropbox(userId)
+				.then(() => {
+					console.log(
+						`Dropbox indexing completed for user ${userId}`,
+					);
+				})
+				.catch((error) => {
+					console.error(
+						`Dropbox indexing failed for user ${userId}:`,
+						error,
+					);
+				});
+
+			return res.redirect(
+				`${process.env.CORS_ORIGIN}/settings?dropbox=connected`,
+			);
+		} catch (error) {
+			console.error("Dropbox OAuth error:", error);
+
+			return res.status(500).send("Failed to connect Dropbox account");
 		}
 	});
 

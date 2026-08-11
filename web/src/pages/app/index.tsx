@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SearchDocumentsDocument } from "@/generated/graphql";
 import { useQuery } from "@apollo/client/react";
 import { DocumentCard } from "@/components/custom/document-card";
+import { FiSearch, FiX } from "react-icons/fi";
 
 interface AppIndexProps {}
 
@@ -37,18 +38,38 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 					$$$$$ [senna] $$$$$
 				</a>
 
-				<p>hi ther</p>
+				<p className="text-[0.9rem] text-gray-500 hover:text-primary-color cursor-pointer hover:underline decoration-dashed">
+					Settings
+				</p>
 			</div>
 
 			<div className="mx-auto w-full max-w-3xl">
-				<input
-					type="text"
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-					placeholder="Search your files..."
-					autoFocus
-					className="mt-3.5 w-full border border-gray-300 bg-transparent px-4 pt-2 py-1.5 text-[0.95rem] outline-none focus:border-primary-color"
-				/>
+				<div className="relative mt-3.5">
+					{" "}
+					<FiSearch
+						className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+						size={17}
+					/>{" "}
+					<input
+						type="text"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						placeholder="Search your files..."
+						autoFocus
+						className="w-full border border-gray-300 bg-transparent px-10 py-1.5 text-[0.95rem] outline-none focus:border-primary-color"
+					/>{" "}
+					{search && (
+						<button
+							type="button"
+							onClick={() => setSearch("")}
+							className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer transition-colors hover:text-primary-color"
+							aria-label="Clear search"
+						>
+							{" "}
+							<FiX size={17} />{" "}
+						</button>
+					)}{" "}
+				</div>
 
 				{loading && (
 					<p className="mt-4 text-base text-gray-400">Searching...</p>

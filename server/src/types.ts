@@ -7,6 +7,8 @@ declare module "express-session" {
 	interface SessionData {
 		userId: string;
 		googleOAuthState?: string;
+		githubOAuthState?: string;
+		dropboxOAuthState?: string;
 	}
 }
 

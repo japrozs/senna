@@ -27,12 +27,12 @@ export const getDocumentLogo = (provider: string, mimeType: string): string => {
 
 	// GitHub
 	if (provider === "github") {
-		return "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png";
+		return "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/GitHub_Invertocat_Logo.svg/960px-GitHub_Invertocat_Logo.svg.png";
 	}
 
 	// Dropbox
 	if (provider === "dropbox") {
-		return "https://cfl.dropboxstatic.com/static/images/favicon-vflUu0i1.ico";
+		return "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Dropbox_Icon.svg/960px-Dropbox_Icon.svg.png";
 	}
 
 	// Generic fallback

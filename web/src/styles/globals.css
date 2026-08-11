@@ -72,3 +72,6 @@
 .blue {
 	color: #2d6cdf;
 }
+input {
+	box-shadow: 2px 2px #eee;
+}
