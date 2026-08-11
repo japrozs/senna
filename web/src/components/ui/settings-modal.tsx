@@ -18,10 +18,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 	email,
 }) => {
 	const [integrations, setIntegrations] = useState({
-		github: false,
-		google: false,
+		github: true,
+		google: true,
 		dropbox: false,
-		notion: false,
+		notion: true,
 	});
 
 	const toggleIntegration = (integration: keyof typeof integrations) => {

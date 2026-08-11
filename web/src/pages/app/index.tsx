@@ -68,7 +68,7 @@ const AppIndex: React.FC<AppIndexProps> = ({}) => {
 				<title>senna</title>
 			</Head>
 
-			<div className="relative flex w-full items-center justify-between">
+			<div className="sticky top-3 relative flex w-full items-center justify-between">
 				<div />
 
 				<a
